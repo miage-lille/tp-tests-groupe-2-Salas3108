@@ -5,6 +5,7 @@ export default {
   testRegex: '^((?!int|e2e).)*.test.ts$',
   coverageDirectory: '../coverage',
   coverageProvider: 'v8',
+  verbose: true,
   moduleFileExtensions: ['js', 'json', 'ts', 'tsx'],
   rootDir: 'src',
   transform: {
