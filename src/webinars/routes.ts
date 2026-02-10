@@ -9,6 +9,7 @@ export async function webinarRoutes(
   container: AppContainer,
 ) {
   const changeSeatsUseCase = container.getChangeSeatsUseCase();
+  const organizeUseCase = container.getOrganizeWebinarsUseCase();
 
   fastify.post<{
     Body: { seats: string };
@@ -35,6 +36,26 @@ export async function webinarRoutes(
         return reply.status(401).send({ error: err.message });
       }
       reply.status(500).send({ error: 'An error occurred' });
+    }
+  });
+
+  fastify.post<{
+    Body: { title: string; seats: number; startDate: string; endDate: string };
+  }>('/webinars', {}, async (request, reply) => {
+    const payload = {
+      userId: 'test-user',
+      title: request.body.title,
+      seats: request.body.seats,
+      startDate: new Date(request.body.startDate),
+      endDate: new Date(request.body.endDate),
+    };
+
+    try {
+      const result = await organizeUseCase.execute(payload);
+      return reply.status(201).send(result);
+    } catch (err) {
+      // map known errors to 400
+      return reply.status(400).send({ error: (err as Error).message });
     }
   });
 }
